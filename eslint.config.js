@@ -15,7 +15,7 @@ module.exports = [
       curly: ["error", "multi-line", "consistent"],
       "dot-location": ["error", "property"],
       "handle-callback-err": "off",
-      indent: ["error", "tab"],
+      indent: ["error", 2],
       "keyword-spacing": "error",
       "max-nested-callbacks": ["error", { max: 4 }],
       "max-statements-per-line": ["error", { max: 2 }],
@@ -32,7 +32,7 @@ module.exports = [
       "no-undef": "off",
       "object-curly-spacing": ["error", "always"],
       "prefer-const": "error",
-      quotes: ["error", "single"],
+      quotes: ["error", "double"],
       semi: ["error", "always"],
       "space-before-blocks": "error",
       "space-before-function-paren": [
@@ -49,5 +49,6 @@ module.exports = [
       "spaced-comment": "error",
       yoda: "error",
     },
+    extends: ["eslint:recommended", "plugin:prettier/recommended"],
   },
 ];
