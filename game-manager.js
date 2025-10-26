@@ -9,6 +9,72 @@ import {
 import { animeQuestions } from "./data/anime-questions.js";
 import { characterQuestions } from "./data/character-questions.js";
 
+function findMatchingQuestion(realQuestion, questionBank) {
+  const realTags = new Set(realQuestion.tags);
+  const pools = {
+    high: [], // 3+ matching tags
+    medium: [], // 2 matching tags
+    low: [], // 1 matching tag
+    any: [], // fallback
+  };
+
+  for (const potentialMatch of questionBank) {
+    if (potentialMatch.q === realQuestion.q) {
+      continue;
+    }
+
+    let score = 0;
+    for (const tag of potentialMatch.tags) {
+      if (realTags.has(tag)) {
+        score++;
+      }
+    }
+
+    if (score >= 3) {
+      pools.high.push(potentialMatch);
+    } else if (score === 2) {
+      pools.medium.push(potentialMatch);
+    } else if (score === 1) {
+      pools.low.push(potentialMatch);
+    } else {
+      pools.any.push(potentialMatch);
+    }
+  }
+
+  const randFloat = Math.random();
+
+  if (pools.high.length > 1) {
+    console.log(`Found ${pools.high.length} high-compatibility matches.`);
+    return pools.high[Math.floor(randFloat * pools.high.length)];
+  }
+
+  if (pools.high.length > 0) {
+    console.log(
+      `Found only ${pools.high.length} high-compatibility matches, appending medium-compatibility matches`
+    );
+    const mixedPool = pools.medium.concat(pools.high);
+    return mixedPool[Math.floor(randFloat * mixedPool.length)];
+  }
+
+  if (pools.medium.length > 0) {
+    console.log(
+      `No high matches. Found ${pools.medium.length} medium-compatibility matches.`
+    );
+    return pools.medium[Math.floor(randFloat * pools.medium.length)];
+  }
+
+  if (pools.low.length > 0) {
+    console.log(
+      `No medium matches. Found ${pools.low.length} low-compatibility matches.`
+    );
+    return pools.low[Math.floor(randFloat * pools.low.length)];
+  }
+
+  // If no questions share any tags, pick a random "other" question
+  console.log("No compatible matches found. Picking any random question.");
+  return pools.any[Math.floor(randFloat * pools.any.length)];
+}
+
 /**
  * Starts the first round or a new round of the game
  */
@@ -68,16 +134,18 @@ export async function startRound(game, client, activeGames, threadToGameMap) {
       return;
     }
 
-    // 2. Pick two DIFFERENT random questions from the bank
-    const availableQuestions = [...questionBank]; // Create a copy
-
     // Pick real question
-    const index1 = Math.floor(Math.random() * availableQuestions.length);
-    game.realQuestion = availableQuestions.splice(index1, 1)[0]; // .splice removes it
+    const realQuestionObject =
+      questionBank[Math.floor(Math.random() * questionBank.length)];
 
     // Pick impostor question
-    const index2 = Math.floor(Math.random() * availableQuestions.length);
-    game.impostorQuestion = availableQuestions[index2];
+    const impostorQuestionObject = findMatchingQuestion(
+      realQuestionObject,
+      questionBank
+    );
+
+    game.realQuestion = realQuestionObject.q;
+    game.impostorQuestion = impostorQuestionObject.q;
 
     // 3. Pick impostor
     const participantsArray = Array.from(game.participants.keys());
