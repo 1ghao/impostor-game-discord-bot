@@ -26,9 +26,12 @@ export default {
     .addStringOption((option) =>
       option
         .setName("category")
-        .setDescription("Which question category do you want to play?")
-        .setRequired(true)
+        .setDescription(
+          "Which question category do you want to play? (Default: Random)"
+        )
+        .setRequired(false)
         .addChoices(
+          { name: "Random (default)", value: "random" },
           { name: "Anime Questions", value: "anime" },
           { name: "Character Questions", value: "character" }
         )
@@ -36,7 +39,10 @@ export default {
 
   async execute(interaction, activeGames) {
     const { channelId, user: host } = interaction;
-    const category = interaction.options.getString("category");
+    let category = interaction.options.getString("category");
+    if (!category || category === "random") {
+      category = "random";
+    }
 
     if (activeGames.has(channelId)) {
       return interaction.reply({

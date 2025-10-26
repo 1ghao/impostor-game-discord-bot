@@ -23,7 +23,15 @@ export async function startRound(game, client, activeGames, userGameMap) {
 
     // 1. Pick correct question bank based on game.category
     let questionBank;
-    if (game.category === "anime") {
+    let chosenCategory = game.category;
+
+    if (chosenCategory === "random") {
+      const categories = ["anime", "characters"];
+      chosenCategory =
+        categories[Math.floor(Math.random() * categories.length)];
+    }
+
+    if (chosenCategory === "anime") {
       questionBank = animeQuestions;
     } else {
       questionBank = characterQuestions;
