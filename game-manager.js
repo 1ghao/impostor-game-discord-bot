@@ -300,20 +300,22 @@ export async function proceedToReveal(
 
     // 2. Build result message
     const impostor = game.participants.get(game.impostorId);
+    const mostVotedPerson = mostVotedIds.join(", ");
+    const impostorVictory = !(mostVotedPerson == impostor.username);
 
     if (mostVotedIds.length === 0) {
       result += "\nNo votes were cast!\n";
     } else {
-      result += `\nThe person (or people) with the most votes was: **${mostVotedIds.join(", ")}**\n`;
+      result += `\nThe person (or people) with the most votes was: **${mostVotedPerson}**\n`;
     }
-
-    result += `\nThe *real* impostor was... **${impostor.username}**! 🕵️\n\n`;
+    result += `\n**IMPOSTOR ${impostorVictory ? "WON" : "LOST"}**`;
+    result += `\nThe *real* impostor was... **${impostor.username}**! 🔪\n\n`;
     result += `Their question was: **${game.impostorQuestion}**`;
 
     const embed = new EmbedBuilder()
       .setTitle("Game Over! Here are the results:")
       .setDescription(result)
-      .setColor(impostor.id === mostVotedIds[0] ? 0x00ff00 : 0xff0000); // Green if impostor caught, red if not (simplified)
+      .setColor(impostorVictory ? 0xff0000 : 0x00ff00); // Red if yes, green if not
 
     // 3. Add 'Play Again' buttons
     const row = new ActionRowBuilder().addComponents(
