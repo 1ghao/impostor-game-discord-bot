@@ -13,6 +13,7 @@ import { characterQuestions } from "./data/character-questions.js";
  */
 export async function startRound(game, client, activeGames, userGameMap) {
   try {
+    game.roundNumber++;
     game.state = "answering";
     // Clear data from previous rounds
     game.answers.clear();
@@ -84,7 +85,7 @@ export async function startRound(game, client, activeGames, userGameMap) {
         .setFooter({ text: "Click the button below to submit your answer." });
 
       const button = new ButtonBuilder()
-        .setCustomId("submitAnswerButton")
+        .setCustomId("submitAnswerButton_" + game.roundNumber)
         .setLabel("Submit Your Answer")
         .setStyle(ButtonStyle.Primary);
 
@@ -196,7 +197,7 @@ export async function proceedToVoting(game, client, activeGames, userGameMap) {
     }));
 
     const menu = new StringSelectMenuBuilder()
-      .setCustomId("voteMenu")
+      .setCustomId("voteMenu_" + game.roundNumber)
       .setPlaceholder("Vote for the Impostor")
       .setOptions(options);
 
@@ -211,7 +212,7 @@ export async function proceedToVoting(game, client, activeGames, userGameMap) {
       const currentGame = activeGames.get(game.channelId);
       if (currentGame && currentGame.state === "voting") {
         console.log(`Game ${game.channelId}: Voting timeout reached.`);
-        proceedToReveal(currentGame, client, activeGames);
+        proceedToReveal(currentGame, client, activeGames, userGameMap);
       }
     }, 900_000); // 180,000ms = 3 minutes
   } catch (error) {

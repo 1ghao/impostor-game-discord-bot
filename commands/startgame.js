@@ -62,6 +62,7 @@ export default {
       lobbyMessage: null,
       answerTimeout: null,
       voteTimeout: null,
+      roundNumber: 0,
     };
 
     const embed = createLobbyEmbed(host, participants);

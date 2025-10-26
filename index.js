@@ -149,9 +149,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
     }
 
     // --- Answer Button (in DM) ---
-    if (customId === "submitAnswerButton") {
-      // Find the game this user is in (since this is a DM)
+    if (customId.startsWith("submitAnswerButton_")) {
+      const round = customId.split("_")[1];
       const channelId = userGameMap.get(interaction.user.id);
+
       if (!channelId) {
         return interaction.reply({
           content:
@@ -161,9 +162,16 @@ client.on(Events.InteractionCreate, async (interaction) => {
       }
 
       const game = activeGames.get(channelId);
-      // ^ ^ ^ END OF REPLACEMENT ^ ^ ^
 
-      if (!game || game.state !== "answering") {
+      if (!game || game.roundNumber.toString() !== round) {
+        return interaction.reply({
+          content:
+            "This button is from a previous round and is no longer active.  expired",
+          ephemeral: true,
+        });
+      }
+
+      if (game.state !== "answering") {
         userGameMap.delete(interaction.user.id); // Clean up stale entry
         return interaction.reply({
           content:
@@ -180,7 +188,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
       // Show Modal
       const modal = new ModalBuilder()
-        .setCustomId("answerModal")
+        .setCustomId("answerModal_" + game.roundNumber)
         .setTitle("Submit Your Answer");
 
       const answerInput = new TextInputBuilder()
@@ -233,9 +241,11 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
   // 3. Handle Modal Submissions
   if (interaction.isModalSubmit()) {
-    if (interaction.customId === "answerModal") {
+    if (interaction.customId.startsWith("answerModal_")) {
       // Find the game this user is in
+      const round = interaction.customId.split("_")[1];
       const channelId = userGameMap.get(interaction.user.id);
+
       if (!channelId) {
         return interaction.reply({
           content: "Error submitting answer. Game not found.",
@@ -244,7 +254,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       }
       const game = activeGames.get(channelId);
 
-      if (!game) {
+      if (!game || game.roundNumber.toString() !== round) {
         return interaction.reply({
           content: "Error submitting answer. Game not found.",
           ephemeral: true,
@@ -278,7 +288,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
   // 4. Handle Select Menus (Voting)
   if (interaction.isStringSelectMenu()) {
-    if (interaction.customId === "voteMenu") {
+    if (interaction.customId.startsWith("voteMenu_")) {
+      const round = interaction.customId.split("_")[1];
       const { channelId, user } = interaction;
       const game = activeGames.get(channelId);
 
@@ -288,6 +299,14 @@ client.on(Events.InteractionCreate, async (interaction) => {
           ephemeral: true,
         });
       }
+      if (game.roundNumber.toString() !== round) {
+        return interaction.reply({
+          content:
+            "This voting menu is from a previous round and is no longer active.  expired",
+          ephemeral: true,
+        });
+      }
+
       if (!game.participants.has(user.id)) {
         return interaction.reply({
           content: "You are not a participant in this game.",
