@@ -41,6 +41,7 @@ const client = new Client({
 
 // Central state manager
 const activeGames = new Map();
+const userGameMap = new Map();
 
 // --- Command Loading ---
 client.commands = new Collection();
@@ -76,7 +77,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
     try {
       // Pass the activeGames map to the command
-      await command.execute(interaction, activeGames);
+      await command.execute(interaction, activeGames, userGameMap);
     } catch (error) {
       console.error(error);
       await interaction.reply({
@@ -129,7 +130,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
             ephemeral: true,
           });
         }
-        if (game.participants.size < 3) {
+        if (game.participants.size < 1) {
           // Minimum 3 players
           return interaction.reply({
             content: "You need at least 3 players to start!",
@@ -137,7 +138,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
           });
         }
         await interaction.deferUpdate(); // Acknowledge the button click
-        await startRound(game, client, activeGames);
+
+        for (const userId of game.participants.keys()) {
+          userGameMap.set(userId, game.channelId);
+        }
+
+        await startRound(game, client, activeGames, userGameMap);
       }
       return;
     }
@@ -145,21 +151,27 @@ client.on(Events.InteractionCreate, async (interaction) => {
     // --- Answer Button (in DM) ---
     if (customId === "submitAnswerButton") {
       // Find the game this user is in (since this is a DM)
-      let userGame;
-      for (const g of activeGames.values()) {
-        if (g.participants.has(user.id) && g.state === "answering") {
-          userGame = g;
-          break;
-        }
+      const channelId = userGameMap.get(interaction.user.id);
+      if (!channelId) {
+        return interaction.reply({
+          content:
+            "I couldn't find an active game for you. The game may have ended or been restarted.",
+          ephemeral: true,
+        });
       }
-      if (!userGame) {
+
+      const game = activeGames.get(channelId);
+      // ^ ^ ^ END OF REPLACEMENT ^ ^ ^
+
+      if (!game || game.state !== "answering") {
+        userGameMap.delete(interaction.user.id); // Clean up stale entry
         return interaction.reply({
           content:
             "I couldn't find an active game for you, or it's not time to answer.",
           ephemeral: true,
         });
       }
-      if (userGame.answers.has(user.id)) {
+      if (game.answers.has(interaction.user.id)) {
         return interaction.reply({
           content: "You have already submitted an answer for this round.",
           ephemeral: true,
@@ -178,6 +190,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
         .setRequired(true);
 
       modal.addComponents(new ActionRowBuilder().addComponents(answerInput));
+
+      // This will now be called well within 3 seconds
       await interaction.showModal(modal);
       return;
     }
@@ -197,13 +211,20 @@ client.on(Events.InteractionCreate, async (interaction) => {
           embeds: [],
           components: [],
         });
-        await startRound(game, client, activeGames); // Re-run the start logic
+        await startRound(game, client, activeGames, userGameMap); // Re-run the start logic
       } else if (customId === "endGameButton") {
         await interaction.update({
           content: "This game has ended. Thanks for playing!",
           embeds: [],
           components: [],
         });
+
+        if (game && game.participants) {
+          for (const userId of game.participants.keys()) {
+            userGameMap.delete(userId);
+          }
+        }
+
         activeGames.delete(channelId);
       }
       return;
@@ -214,19 +235,26 @@ client.on(Events.InteractionCreate, async (interaction) => {
   if (interaction.isModalSubmit()) {
     if (interaction.customId === "answerModal") {
       // Find the game this user is in
-      let game;
-      for (const g of activeGames.values()) {
-        if (
-          g.participants.has(interaction.user.id) &&
-          g.state === "answering"
-        ) {
-          game = g;
-          break;
-        }
+      const channelId = userGameMap.get(interaction.user.id);
+      if (!channelId) {
+        return interaction.reply({
+          content: "Error submitting answer. Game not found.",
+          ephemeral: true,
+        });
       }
+      const game = activeGames.get(channelId);
+
       if (!game) {
         return interaction.reply({
           content: "Error submitting answer. Game not found.",
+          ephemeral: true,
+        });
+      }
+
+      //Check for double clicks in submit
+      if (game.answers.has(interaction.user.id)) {
+        return interaction.reply({
+          content: "You have already submitted an answer. Please wait...",
           ephemeral: true,
         });
       }
@@ -242,7 +270,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
       // Check if all answers are in
       if (game.answers.size === game.participants.size) {
-        proceedToVoting(game, client, activeGames);
+        proceedToVoting(game, client, activeGames, userGameMap); // <-- Pass map
       }
     }
     return;
@@ -284,7 +312,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
       // Check if all votes are in
       if (game.votes.size === game.participants.size) {
-        proceedToReveal(game, client, activeGames);
+        proceedToReveal(game, client, activeGames, userGameMap);
       }
     }
     return;

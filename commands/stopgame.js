@@ -5,7 +5,7 @@ export default {
     .setName("stopgame")
     .setDescription("Stops the current game in this channel"),
 
-  async execute(interaction, activeGames) {
+  async execute(interaction, activeGames, userGameMap) {
     const game = activeGames.get(interaction.channelId);
 
     if (!game) {
@@ -18,6 +18,12 @@ export default {
     // Clear any running timeouts
     if (game.answerTimeout) clearTimeout(game.answerTimeout);
     if (game.voteTimeout) clearTimeout(game.voteTimeout);
+
+    if (game && game.participants) {
+      for (const userId of game.participants.keys()) {
+        userGameMap.delete(userId);
+      }
+    }
 
     activeGames.delete(interaction.channelId);
 

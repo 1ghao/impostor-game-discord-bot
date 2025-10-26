@@ -11,7 +11,7 @@ import { characterQuestions } from "./data/character-questions.js";
 /**
  * Starts the first round or a new round of the game
  */
-export async function startRound(game, client, activeGames) {
+export async function startRound(game, client, activeGames, userGameMap) {
   try {
     game.state = "answering";
     // Clear data from previous rounds
@@ -49,6 +49,13 @@ export async function startRound(game, client, activeGames) {
     const index2 = Math.floor(Math.random() * availableQuestions.length);
     game.impostorQuestion = availableQuestions[index2];
 
+    console.log(
+      availableQuestions,
+      index1,
+      index2,
+      game.realQuestion,
+      game.impostorQuestion
+    );
     // 3. Pick impostor
     const participantsArray = Array.from(game.participants.keys());
     game.impostorId =
@@ -66,7 +73,7 @@ export async function startRound(game, client, activeGames) {
     });
 
     // 5. DM all participants
-    const dmPromises = [];
+    const failedDMs = [];
     for (const [userId, user] of game.participants) {
       const isImpostor = userId === game.impostorId;
       const question = isImpostor ? game.impostorQuestion : game.realQuestion;
@@ -83,18 +90,49 @@ export async function startRound(game, client, activeGames) {
 
       const row = new ActionRowBuilder().addComponents(button);
 
-      dmPromises.push(
-        user.send({ embeds: [embed], components: [row] }).catch((err) => {
-          console.error(
-            `Failed to DM user ${user.id}. They may have DMs closed.`
-          );
-          // You could auto-mark them as "No Answer" here
-        })
-      );
+      try {
+        await user.send({ embeds: [embed], components: [row] });
+      } catch (error) {
+        console.error(
+          `Failed to DM user ${user.id}. They may have DMs closed.`
+        );
+        failedDMs.push(user); // Add the user to a "failed" list
+      }
     }
-    await Promise.all(dmPromises);
 
-    // 6. Start answer timeout (5 minutes)
+    // 6. Handle any DM failures
+    const channel = await client.channels.fetch(game.channelId);
+
+    if (failedDMs.length > 0) {
+      const mentions = failedDMs.map((u) => u.toString()).join(", ");
+
+      await channel.send({
+        content: `**Warning!** I could not send a DM to ${mentions}.
+This is usually because your privacy settings for this server are set to **disallow DMs from server members**.
+*(How to fix: Right-click server icon > Privacy Settings > Allow DMs from server members)*
+\n**Removing the player(s) above from this round.**`,
+        // This ensures we only ping the users who had the problem
+        allowedMentions: { users: failedDMs.map((u) => u.id) },
+      });
+
+      // Remove them from the game for this round
+      for (const user of failedDMs) {
+        game.participants.delete(user.id);
+        userGameMap.delete(user.id);
+      }
+    }
+
+    // 7. Check if enough players are left
+    if (game.participants.size < 1) {
+      await channel.send(
+        "There are not enough players left to continue after the DM failures. Stopping the game."
+      );
+      activeGames.delete(game.channelId);
+      return; // Stop the round from starting
+    }
+
+    // 8. Start answer timeout (5 minutes)
+    // (This is the original timeout code, just moved down)
     game.answerTimeout = setTimeout(() => {
       const currentGame = activeGames.get(game.channelId);
       if (currentGame && currentGame.state === "answering") {
@@ -104,10 +142,14 @@ export async function startRound(game, client, activeGames) {
     }, 300_000); // 300,000ms = 5 minutes
   } catch (error) {
     console.error("Error starting round:", error);
-    const channel = await client.channels.fetch(game.channelId);
-    await channel.send(
-      "An error occurred while starting the round. Stopping the game."
-    );
+    try {
+      const channel = await client.channels.fetch(game.channelId);
+      await channel.send(
+        "An unknown error occurred while starting the round. Stopping the game."
+      );
+    } catch (e) {
+      console.error("Failed to send error message to channel", e);
+    }
     activeGames.delete(game.channelId);
   }
 }
@@ -115,7 +157,7 @@ export async function startRound(game, client, activeGames) {
 /**
  * Moves the game to the voting phase
  */
-export async function proceedToVoting(game, client, activeGames) {
+export async function proceedToVoting(game, client, activeGames, userGameMap) {
   if (game.state !== "answering") return; // Avoid race condition
   game.state = "voting";
   clearTimeout(game.answerTimeout);
@@ -171,7 +213,7 @@ export async function proceedToVoting(game, client, activeGames) {
         console.log(`Game ${game.channelId}: Voting timeout reached.`);
         proceedToReveal(currentGame, client, activeGames);
       }
-    }, 180_000); // 180,000ms = 3 minutes
+    }, 900_000); // 180,000ms = 3 minutes
   } catch (error) {
     console.error("Error proceeding to voting:", error);
     // Handle error, maybe stop game
@@ -181,7 +223,7 @@ export async function proceedToVoting(game, client, activeGames) {
 /**
  * Reveals the game results
  */
-export async function proceedToReveal(game, client, activeGames) {
+export async function proceedToReveal(game, client, activeGames, userGameMap) {
   if (game.state !== "voting") return; // Avoid race condition
   game.state = "finished";
   clearTimeout(game.voteTimeout);
