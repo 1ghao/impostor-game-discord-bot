@@ -37,7 +37,7 @@ export default {
         )
     ),
 
-  async execute(interaction, activeGames) {
+  async execute(interaction, activeGames, threadToGameMap) {
     const { channelId, user: host } = interaction;
     let category = interaction.options.getString("category");
     if (!category || category === "random") {
@@ -69,6 +69,7 @@ export default {
       answerTimeout: null,
       voteTimeout: null,
       roundNumber: 0,
+      activeThreads: new Map(),
     };
 
     const embed = createLobbyEmbed(host, participants);

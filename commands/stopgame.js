@@ -5,7 +5,7 @@ export default {
     .setName("stopgame")
     .setDescription("Stops the current game in this channel"),
 
-  async execute(interaction, activeGames, userGameMap) {
+  async execute(interaction, activeGames, threadToGameMap) {
     const game = activeGames.get(interaction.channelId);
 
     if (!game) {
@@ -15,19 +15,25 @@ export default {
       });
     }
 
-    // Clear any running timeouts
     if (game.answerTimeout) clearTimeout(game.answerTimeout);
     if (game.voteTimeout) clearTimeout(game.voteTimeout);
 
-    if (game && game.participants) {
-      for (const userId of game.participants.keys()) {
-        userGameMap.delete(userId);
+    // === THREAD CLEANUP ===
+
+    if (game && game.activeThreads) {
+      for (const threadId of game.activeThreads.values()) {
+        threadToGameMap.delete(threadId);
+        try {
+          const thread = await interaction.client.channels.fetch(threadId);
+          await thread.delete("Game stopped by stop command.");
+        } catch (e) {
+          console.error("Could not stop game by command:", error);
+        }
       }
     }
 
     activeGames.delete(interaction.channelId);
 
-    // Try to edit the original lobby message, or just send a new message
     try {
       await game.lobbyMessage.edit({
         content: "This game was manually stopped.",

@@ -41,7 +41,7 @@ const client = new Client({
 
 // Central state manager
 const activeGames = new Map();
-const userGameMap = new Map();
+const threadToGameMap = new Map();
 
 // --- Command Loading ---
 client.commands = new Collection();
@@ -76,8 +76,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     if (!command) return;
 
     try {
-      // Pass the activeGames map to the command
-      await command.execute(interaction, activeGames, userGameMap);
+      await command.execute(interaction, activeGames, threadToGameMap);
     } catch (error) {
       console.error(error);
       await interaction.reply({
@@ -90,178 +89,206 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
   // 2. Handle Buttons
   if (interaction.isButton()) {
-    const { customId, user, channelId } = interaction;
-    const game = activeGames.get(channelId);
+    const { customId, user, channel, channelId } = interaction;
+    let game;
+    let mainChannelId;
 
-    // --- Lobby Buttons (in channel) ---
-    if (game && game.state === "lobby") {
-      if (customId === "joinGame") {
-        game.participants.set(user.id, user);
-        const embed = createLobbyEmbed(
-          game.participants.get(game.hostId),
-          game.participants
-        );
-        await game.lobbyMessage.edit({ embeds: [embed] });
-        await interaction.reply({
-          content: "You have joined the game! 🎉",
+    // Find game
+    if (channel.isThread()) {
+      mainChannelId = threadToGameMap.get(channelId);
+      if (!mainChannelId) {
+        return interaction.reply({
+          content: "Error finding game. This thread may be invalid or expired.",
           ephemeral: true,
         });
-      } else if (customId === "leaveGame") {
-        if (user.id === game.hostId) {
+      }
+      game = activeGames.get(mainChannelId);
+    } else {
+      game = activeGames.get(channelId);
+      mainChannelId = channelId;
+    }
+
+    if (!game) {
+      return interaction.reply({
+        content:
+          "I couldn't find an active game for this interaction. It may have been stopped.",
+        ephemeral: true,
+      });
+    }
+
+    // Logic for THREAD buttons
+    if (channel.isThread()) {
+      if (customId.startsWith("submitAnswerButton_")) {
+        const round = customId.split("_")[1];
+
+        // Validate round
+        if (!game || game.roundNumber.toString() !== round) {
           return interaction.reply({
-            content: "The host cannot leave! Use /stopgame to end the game.",
+            content:
+              "This button is from a previous round and is no longer active.",
             ephemeral: true,
           });
         }
-        game.participants.delete(user.id);
-        const embed = createLobbyEmbed(
-          game.participants.get(game.hostId),
-          game.participants
-        );
-        await game.lobbyMessage.edit({ embeds: [embed] });
-        await interaction.reply({
-          content: "You have left the game.",
-          ephemeral: true,
-        });
-      } else if (customId === "startGame") {
+        // Validate state
+        if (game.state !== "answering") {
+          return interaction.reply({
+            content: "It is not time to answer!",
+            ephemeral: true,
+          });
+        }
+        // Validate user
+        if (!game.participants.has(user.id)) {
+          return interaction.reply({
+            content: "You are not part of this game.",
+            ephemeral: true,
+          });
+        }
+        // Validate submission
+        if (game.answers.has(user.id)) {
+          return interaction.reply({
+            content: "You have already submitted an answer for this round.",
+            ephemeral: true,
+          });
+        }
+
+        // Show Modal
+        const modal = new ModalBuilder()
+          .setCustomId(`answerModal_${game.roundNumber}`)
+          .setTitle("Submit Your Answer");
+        const answerInput = new TextInputBuilder()
+          .setCustomId("answerInput")
+          .setLabel("What is your answer?")
+          .setStyle(TextInputStyle.Short)
+          .setRequired(true);
+        modal.addComponents(new ActionRowBuilder().addComponents(answerInput));
+
+        await interaction.showModal(modal);
+        return;
+      }
+    }
+
+    // === Logic for MAIN CHANNEL buttons ===
+    if (!channel.isThread()) {
+      // --- Lobby Buttons ---
+      if (game.state === "lobby") {
+        if (customId === "joinGame") {
+          game.participants.set(user.id, user);
+          const embed = createLobbyEmbed(
+            game.participants.get(game.hostId),
+            game.participants
+          );
+          await game.lobbyMessage.edit({ embeds: [embed] });
+          return interaction.reply({
+            content: "You have joined the game! 🎉",
+            ephemeral: true,
+          });
+        }
+
+        if (customId === "leaveGame") {
+          if (user.id === game.hostId) {
+            return interaction.reply({
+              content: "The host cannot leave! Use /stopgame to end the game.",
+              ephemeral: true,
+            });
+          }
+          game.participants.delete(user.id);
+          const embed = createLobbyEmbed(
+            game.participants.get(game.hostId),
+            game.participants
+          );
+          await game.lobbyMessage.edit({ embeds: [embed] });
+          return interaction.reply({
+            content: "You have left the game.",
+            ephemeral: true,
+          });
+        }
+
+        if (customId === "startGame") {
+          // HOST CHECK
+          if (user.id !== game.hostId) {
+            return interaction.reply({
+              content: "Only the host can start the game!",
+              ephemeral: true,
+            });
+          }
+          // PARTICIPANT CHECK
+          if (game.participants.size < 1) {
+            return interaction.reply({
+              content: "You need at least 3 players to start!",
+              ephemeral: true,
+            });
+          }
+
+          await interaction.deferUpdate(); // Acknowledge the button click
+          await startRound(game, client, activeGames, threadToGameMap);
+          return;
+        }
+      }
+
+      // --- End-of-Game Buttons ---
+      if (game.state === "finished") {
+        // HOST CHECK
         if (user.id !== game.hostId) {
           return interaction.reply({
-            content: "Only the host can start the game!",
+            content: "Only the host can restart or end the game.",
             ephemeral: true,
           });
         }
-        if (game.participants.size < 1) {
-          // Minimum 3 players
-          return interaction.reply({
-            content: "You need at least 3 players to start!",
-            ephemeral: true,
+
+        if (customId === "playAgainButton") {
+          await interaction.update({
+            content: "Starting a new round with the same players...",
+            embeds: [],
+            components: [],
           });
-        }
-        await interaction.deferUpdate(); // Acknowledge the button click
+          await startRound(game, client, activeGames, threadToGameMap);
+        } else if (customId === "endGameButton") {
+          await interaction.update({
+            content: "This game has ended. Thanks for playing!",
+            embeds: [],
+            components: [],
+          });
 
-        for (const userId of game.participants.keys()) {
-          userGameMap.set(userId, game.channelId);
-        }
-
-        await startRound(game, client, activeGames, userGameMap);
-      }
-      return;
-    }
-
-    // --- Answer Button (in DM) ---
-    if (customId.startsWith("submitAnswerButton_")) {
-      const round = customId.split("_")[1];
-      const channelId = userGameMap.get(interaction.user.id);
-
-      if (!channelId) {
-        return interaction.reply({
-          content:
-            "I couldn't find an active game for you. The game may have ended or been restarted.",
-          ephemeral: true,
-        });
-      }
-
-      const game = activeGames.get(channelId);
-
-      if (!game || game.roundNumber.toString() !== round) {
-        return interaction.reply({
-          content:
-            "This button is from a previous round and is no longer active.  expired",
-          ephemeral: true,
-        });
-      }
-
-      if (game.state !== "answering") {
-        userGameMap.delete(interaction.user.id); // Clean up stale entry
-        return interaction.reply({
-          content:
-            "I couldn't find an active game for you, or it's not time to answer.",
-          ephemeral: true,
-        });
-      }
-      if (game.answers.has(interaction.user.id)) {
-        return interaction.reply({
-          content: "You have already submitted an answer for this round.",
-          ephemeral: true,
-        });
-      }
-
-      // Show Modal
-      const modal = new ModalBuilder()
-        .setCustomId("answerModal_" + game.roundNumber)
-        .setTitle("Submit Your Answer");
-
-      const answerInput = new TextInputBuilder()
-        .setCustomId("answerInput")
-        .setLabel("What is your answer?")
-        .setStyle(TextInputStyle.Short)
-        .setRequired(true);
-
-      modal.addComponents(new ActionRowBuilder().addComponents(answerInput));
-
-      // This will now be called well within 3 seconds
-      await interaction.showModal(modal);
-      return;
-    }
-
-    // --- End-of-Game Buttons (in channel) ---
-    if (game && game.state === "finished") {
-      if (user.id !== game.hostId) {
-        return interaction.reply({
-          content: "Only the host can restart or end the game.",
-          ephemeral: true,
-        });
-      }
-
-      if (customId === "playAgainButton") {
-        await interaction.update({
-          content: "Starting a new round with the same players...",
-          embeds: [],
-          components: [],
-        });
-        await startRound(game, client, activeGames, userGameMap); // Re-run the start logic
-      } else if (customId === "endGameButton") {
-        await interaction.update({
-          content: "This game has ended. Thanks for playing!",
-          embeds: [],
-          components: [],
-        });
-
-        if (game && game.participants) {
-          for (const userId of game.participants.keys()) {
-            userGameMap.delete(userId);
+          // Cleanup threads
+          if (game.activeThreads) {
+            for (const threadId of game.activeThreads.values()) {
+              threadToGameMap.delete(threadId);
+              try {
+                const thread = await client.channels.fetch(threadId);
+                await thread.delete("Game ended.");
+              } catch (e) {
+                console.error("Could not delete threads:", e);
+              }
+            }
           }
+          activeGames.delete(channelId);
         }
-
-        activeGames.delete(channelId);
+        return;
       }
-      return;
     }
   }
 
   // 3. Handle Modal Submissions
   if (interaction.isModalSubmit()) {
     if (interaction.customId.startsWith("answerModal_")) {
-      // Find the game this user is in
       const round = interaction.customId.split("_")[1];
-      const channelId = userGameMap.get(interaction.user.id);
 
-      if (!channelId) {
+      const mainChannelId = threadToGameMap.get(interaction.channelId);
+      if (!mainChannelId) {
         return interaction.reply({
-          content: "Error submitting answer. Game not found.",
+          content: "Error finding game. This modal may be invalid.",
           ephemeral: true,
         });
       }
-      const game = activeGames.get(channelId);
+      const game = activeGames.get(mainChannelId);
 
       if (!game || game.roundNumber.toString() !== round) {
         return interaction.reply({
-          content: "Error submitting answer. Game not found.",
+          content:
+            "This modal is from a previous round and is no longer active.",
           ephemeral: true,
         });
       }
-
-      //Check for double clicks in submit
       if (game.answers.has(interaction.user.id)) {
         return interaction.reply({
           content: "You have already submitted an answer. Please wait...",
@@ -278,9 +305,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
         ephemeral: true,
       });
 
-      // Check if all answers are in
       if (game.answers.size === game.participants.size) {
-        proceedToVoting(game, client, activeGames, userGameMap); // <-- Pass map
+        proceedToVoting(game, client, activeGames, threadToGameMap);
       }
     }
     return;
@@ -331,7 +357,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
       // Check if all votes are in
       if (game.votes.size === game.participants.size) {
-        proceedToReveal(game, client, activeGames, userGameMap);
+        proceedToReveal(game, client, activeGames, threadToGameMap);
       }
     }
     return;

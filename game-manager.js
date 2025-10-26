@@ -4,6 +4,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
   StringSelectMenuBuilder,
+  ChannelType,
 } from "discord.js";
 import { animeQuestions } from "./data/anime-questions.js";
 import { characterQuestions } from "./data/character-questions.js";
@@ -11,7 +12,7 @@ import { characterQuestions } from "./data/character-questions.js";
 /**
  * Starts the first round or a new round of the game
  */
-export async function startRound(game, client, activeGames, userGameMap) {
+export async function startRound(game, client, activeGames, threadToGameMap) {
   try {
     game.roundNumber++;
     game.state = "answering";
@@ -20,6 +21,26 @@ export async function startRound(game, client, activeGames, userGameMap) {
     game.votes.clear();
     if (game.answerTimeout) clearTimeout(game.answerTimeout);
     if (game.voteTimeout) clearTimeout(game.voteTimeout);
+
+    // Thread Clean up
+    if (game.activeThreads.size > 0) {
+      console.log(
+        `Cleaning up ${game.activeThreads.size} threads from previous round.`
+      );
+      for (const threadId of game.activeThreads.values()) {
+        threadToGameMap.delete(threadId);
+        try {
+          const thread = await client.channels.fetch(threadId);
+          await thread.delete("Game round ended.");
+        } catch (e) {
+          console.error(
+            `Failed to delete old thread (${threadId}):`,
+            e.message
+          );
+        }
+      }
+      game.activeThreads.clear();
+    }
 
     // 1. Pick correct question bank based on game.category
     let questionBank;
@@ -58,13 +79,6 @@ export async function startRound(game, client, activeGames, userGameMap) {
     const index2 = Math.floor(Math.random() * availableQuestions.length);
     game.impostorQuestion = availableQuestions[index2];
 
-    console.log(
-      availableQuestions,
-      index1,
-      index2,
-      game.realQuestion,
-      game.impostorQuestion
-    );
     // 3. Pick impostor
     const participantsArray = Array.from(game.participants.keys());
     game.impostorId =
@@ -76,58 +90,68 @@ export async function startRound(game, client, activeGames, userGameMap) {
 
     // 4. Edit lobby message
     await game.lobbyMessage.edit({
-      content: "The game has started! Check your DMs for your question. 📩",
+      content:
+        "The game has started! I am creating private threads for your questions... 📩",
       embeds: [],
       components: [],
     });
 
-    // 5. DM all participants
-    const failedDMs = [];
+    // 5. Create private threads for all participants
+    const failedParticipants = [];
+    const channel = await client.channels.fetch(game.channelId);
+
     for (const [userId, user] of game.participants) {
       const isImpostor = userId === game.impostorId;
       const question = isImpostor ? game.impostorQuestion : game.realQuestion;
 
-      const embed = new EmbedBuilder()
-        .setTitle("Your Question Is...")
-        .setDescription(`**${question}**}`)
-        .setFooter({ text: "Click the button below to submit your answer." });
-
-      const button = new ButtonBuilder()
-        .setCustomId("submitAnswerButton_" + game.roundNumber)
-        .setLabel("Submit Your Answer")
-        .setStyle(ButtonStyle.Primary);
-
-      const row = new ActionRowBuilder().addComponents(button);
-
       try {
-        await user.send({ embeds: [embed], components: [row] });
+        const thread = await channel.threads.create({
+          name: `${user.username}'s Question - Round ${game.roundNumber}`,
+          type: ChannelType.PrivateThread,
+          reason: `Impostor game round ${game.roundNumber}`,
+        });
+
+        await thread.members.add(user.id);
+
+        const embed = new EmbedBuilder()
+          .setTitle("Your Question Is...")
+          .setDescription(`**${question}**`)
+          .setFooter({ text: "Click the button below to submit your answer." });
+
+        const button = new ButtonBuilder()
+          .setCustomId(`submitAnswerButton_${game.roundNumber}`)
+          .setLabel("Submit Your Answer")
+          .setStyle(ButtonStyle.Primary);
+
+        const row = new ActionRowBuilder().addComponents(button);
+
+        await thread.send({
+          content: `Welcome ${user.toString()}! Here is your secret question.`,
+          embeds: [embed],
+          components: [row],
+        });
+
+        threadToGameMap.set(thread.id, game.channelId);
+
+        game.activeThreads.set(user.id, thread.id);
       } catch (error) {
-        console.error(
-          `Failed to DM user ${user.id}. They may have DMs closed.`
-        );
-        failedDMs.push(user); // Add the user to a "failed" list
+        console.error(`Failed to create thread for user ${user.id}:`, error);
+        failedParticipants.push(user);
       }
     }
 
     // 6. Handle any DM failures
-    const channel = await client.channels.fetch(game.channelId);
-
-    if (failedDMs.length > 0) {
-      const mentions = failedDMs.map((u) => u.toString()).join(", ");
-
+    if (failedParticipants.length > 0) {
+      const mentions = failedParticipants.map((u) => u.toString()).join(", ");
       await channel.send({
-        content: `**Warning!** I could not send a DM to ${mentions}.
-This is usually because your privacy settings for this server are set to **disallow DMs from server members**.
-*(How to fix: Right-click server icon > Privacy Settings > Allow DMs from server members)*
+        content: `**Warning!** I could not create a private thread for ${mentions}.
+This is usually because I am missing the **'Create Private Threads'** or **'Manage Threads'** permission in this channel.
 \n**Removing the player(s) above from this round.**`,
-        // This ensures we only ping the users who had the problem
-        allowedMentions: { users: failedDMs.map((u) => u.id) },
+        allowedMentions: { users: failedParticipants.map((u) => u.id) },
       });
 
-      // Remove them from the game for this round
-      for (const user of failedDMs) {
+      for (const user of failedParticipants) {
         game.participants.delete(user.id);
-        userGameMap.delete(user.id);
       }
     }
 
@@ -136,19 +160,22 @@ This is usually because your privacy settings for this server are set to **disal
       await channel.send(
         "There are not enough players left to continue after the DM failures. Stopping the game."
       );
+      for (const threadId of game.activeThreads.values()) {
+        threadToGameMap.delete(threadId);
+        (await client.channels.fetch(threadId)).delete();
+      }
       activeGames.delete(game.channelId);
-      return; // Stop the round from starting
+      return;
     }
 
     // 8. Start answer timeout (5 minutes)
-    // (This is the original timeout code, just moved down)
     game.answerTimeout = setTimeout(() => {
       const currentGame = activeGames.get(game.channelId);
       if (currentGame && currentGame.state === "answering") {
         console.log(`Game ${game.channelId}: Answer timeout reached.`);
-        proceedToVoting(currentGame, client, activeGames);
+        proceedToVoting(currentGame, client, activeGames, threadToGameMap);
       }
-    }, 300_000); // 300,000ms = 5 minutes
+    }, 300_000);
   } catch (error) {
     console.error("Error starting round:", error);
     try {
@@ -166,7 +193,12 @@ This is usually because your privacy settings for this server are set to **disal
 /**
  * Moves the game to the voting phase
  */
-export async function proceedToVoting(game, client, activeGames, userGameMap) {
+export async function proceedToVoting(
+  game,
+  client,
+  activeGames,
+  threadToGameMap
+) {
   if (game.state !== "answering") return; // Avoid race condition
   game.state = "voting";
   clearTimeout(game.answerTimeout);
@@ -220,7 +252,7 @@ export async function proceedToVoting(game, client, activeGames, userGameMap) {
       const currentGame = activeGames.get(game.channelId);
       if (currentGame && currentGame.state === "voting") {
         console.log(`Game ${game.channelId}: Voting timeout reached.`);
-        proceedToReveal(currentGame, client, activeGames, userGameMap);
+        proceedToReveal(currentGame, client, activeGames, threadToGameMap);
       }
     }, 900_000); // 180,000ms = 3 minutes
   } catch (error) {
@@ -232,7 +264,12 @@ export async function proceedToVoting(game, client, activeGames, userGameMap) {
 /**
  * Reveals the game results
  */
-export async function proceedToReveal(game, client, activeGames, userGameMap) {
+export async function proceedToReveal(
+  game,
+  client,
+  activeGames,
+  threadToGameMap
+) {
   if (game.state !== "voting") return; // Avoid race condition
   game.state = "finished";
   clearTimeout(game.voteTimeout);
