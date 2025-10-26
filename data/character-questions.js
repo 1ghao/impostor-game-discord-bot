@@ -10,7 +10,6 @@ export const characterQuestions = [
   "Who is your biggest anime 'waifu'? ❤️",
   "Who is the 'best girl' of all anime?",
   "Who is the 'best boy' of all anime?",
-  "Who is your favorite character from the 'Big 3' (One Piece, Naruto, Bleach)?",
   "Who is your favorite non-human character (animal, robot, demon, etc.)?",
   "Who is your favorite 'mascot' character?",
   "Who is your favorite character from a sports anime?",
