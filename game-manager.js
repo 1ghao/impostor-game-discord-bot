@@ -43,17 +43,27 @@ function findMatchingQuestion(realQuestion, questionBank) {
 
   const randFloat = Math.random();
 
-  if (pools.high.length > 1) {
+  if (pools.high.length > 2) {
     console.log(`Found ${pools.high.length} high-compatibility matches.`);
     return pools.high[Math.floor(randFloat * pools.high.length)];
   }
 
   if (pools.high.length > 0) {
     console.log(
-      `Found only ${pools.high.length} high-compatibility matches, appending medium-compatibility matches`
+      `Found only ${pools.high.length} high-compatibility matches, appending 3 medium-compatibility matches`
     );
-    const mixedPool = pools.medium.concat(pools.high);
-    return mixedPool[Math.floor(randFloat * mixedPool.length)];
+    const mediumPool = pools.medium;
+
+    // Shuffle array
+    for (let i = mediumPool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [mediumPool[i], mediumPool[j]] = [mediumPool[j], mediumPool[i]];
+    }
+
+    while (pools.high.length < Math.min(mediumPool.length, 4)) {
+      pools.high.push(mediumPool.pop());
+    }
+    return pools.high[Math.floor(randFloat * pools.high.length)];
   }
 
   if (pools.medium.length > 0) {
