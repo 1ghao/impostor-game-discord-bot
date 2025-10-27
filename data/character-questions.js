@@ -1,479 +1,502 @@
 export const characterQuestions = [
   {
     q: "Who is your all-time favorite anime character?",
-    tags: ["favorite", "positive", "emotional"],
+    tags: ["positive", "favorite", "emotional"],
   },
   {
     q: "Which anime character has the best development?",
-    tags: ["writing", "positive", "growth"],
+    tags: ["positive", "writing", "growth"],
   },
   {
     q: "Who is the most overpowered anime character?",
-    tags: ["power", "positive", "action"],
+    tags: ["positive", "power", "action"],
   },
   {
     q: "Who is the best anime villain?",
-    tags: ["villain", "positive", "impact"],
+    tags: ["positive", "villain", "impact"],
   },
   {
     q: "Whose death hit you the hardest? 😭",
-    tags: ["emotional", "negative", "tragic"],
+    tags: ["negative", "emotional", "tragic"],
   },
   {
     q: "Who is the best female character?",
-    tags: ["representation", "positive", "writing"],
+    tags: ["positive", "representation", "writing"],
   },
   {
     q: "Who has the best visual design?",
-    tags: ["visual", "positive", "creative"],
+    tags: ["positive", "visual", "creative"],
   },
-  { q: "Who has the coolest weapon?", tags: ["action", "positive", "visual"] },
+  {
+    q: "Who has the coolest weapon?",
+    tags: ["positive", "action", "visual"],
+  },
   {
     q: "Who is the funniest anime character?",
-    tags: ["humor", "positive", "emotional"],
+    tags: ["positive", "humor", "emotional"],
   },
   {
     q: "Who has the most tragic backstory?",
-    tags: ["writing", "negative", "tragic"],
+    tags: ["negative", "writing", "tragic"],
   },
   {
     q: "Who has the best transformation?",
-    tags: ["growth", "positive", "power"],
+    tags: ["positive", "growth", "power"],
   },
   {
     q: "Who is the most intelligent character?",
-    tags: ["intelligence", "positive", "writing"],
+    tags: ["positive", "intelligence", "writing"],
   },
   {
     q: "Who is the most badass anime character?",
-    tags: ["power", "positive", "action"],
+    tags: ["positive", "power", "action"],
   },
   {
     q: "Who has the most iconic moment?",
-    tags: ["impact", "positive", "memorable"],
+    tags: ["positive", "impact", "memorable"],
   },
   {
     q: "Who is the most loyal character?",
-    tags: ["emotional", "positive", "social"],
+    tags: ["positive", "emotional", "social"],
   },
   {
     q: "Who would you want as your best friend?",
-    tags: ["social", "positive", "emotional"],
+    tags: ["positive", "social", "emotional"],
   },
   {
     q: "Who is the most powerful female in anime?",
-    tags: ["representation", "positive", "power"],
+    tags: ["positive", "representation", "power"],
   },
   {
     q: "Whose motivations do you relate to most?",
-    tags: ["writing", "positive", "emotional"],
+    tags: ["positive", "writing", "emotional"],
   },
   {
     q: "Who is the most honorable character?",
-    tags: ["emotional", "positive", "moral"],
+    tags: ["positive", "emotional", "moral"],
   },
   {
     q: "Who is the most evil anime character?",
-    tags: ["villain", "negative", "dark"],
+    tags: ["negative", "villain", "dark"],
   },
   {
     q: "Who is the most tragic hero?",
-    tags: ["tragic", "negative", "emotional"],
+    tags: ["negative", "tragic", "emotional"],
   },
   {
     q: "Who has the best redemption arc?",
-    tags: ["growth", "positive", "writing"],
+    tags: ["positive", "growth", "writing"],
   },
   {
     q: "Who is the most selfless character?",
-    tags: ["moral", "positive", "emotional"],
+    tags: ["positive", "moral", "emotional"],
   },
   {
     q: "Who would you want by your side in a fight?",
-    tags: ["power", "positive", "action"],
+    tags: ["positive", "power", "action"],
   },
-  { q: "Who has the best comeback?", tags: ["impact", "positive", "growth"] },
+  {
+    q: "Who has the best comeback?",
+    tags: ["positive", "impact", "growth"],
+  },
   {
     q: "Who is the most misunderstood character?",
-    tags: ["writing", "negative", "emotional"],
+    tags: ["negative", "writing", "emotional"],
   },
   {
     q: "Who made the biggest sacrifice?",
-    tags: ["emotional", "positive", "moral"],
+    tags: ["positive", "emotional", "moral"],
   },
   {
     q: "Who is the most feared character?",
-    tags: ["dark", "negative", "power"],
+    tags: ["negative", "dark", "power"],
   },
   {
     q: "Who has the best friendships?",
-    tags: ["social", "positive", "emotional"],
+    tags: ["positive", "social", "emotional"],
   },
   {
     q: "Who is the most underestimated character?",
-    tags: ["underdog", "positive", "emotional"],
+    tags: ["positive", "underdog", "emotional"],
   },
   {
     q: "Who has the best villain backstory?",
-    tags: ["villain", "writing", "negative"],
+    tags: ["negative", "villain", "writing"],
   },
   {
     q: "Who is the most charismatic character?",
-    tags: ["personality", "positive", "visual"],
+    tags: ["positive", "personality", "visual"],
   },
   {
     q: "Who is the most tragic villain?",
-    tags: ["villain", "negative", "tragic"],
+    tags: ["negative", "villain", "tragic"],
   },
   {
     q: "Who would you trust with your life?",
-    tags: ["social", "positive", "moral"],
+    tags: ["positive", "social", "moral"],
   },
   {
     q: "Who is the most courageous character?",
-    tags: ["moral", "positive", "emotional"],
+    tags: ["positive", "moral", "emotional"],
   },
   {
     q: "Who has the most iconic line?",
-    tags: ["writing", "positive", "memorable"],
+    tags: ["positive", "writing", "memorable"],
   },
   {
     q: "Who is the most complex character?",
-    tags: ["writing", "positive", "personality"],
+    tags: ["positive", "writing", "personality"],
   },
-  { q: "Who is the best anti-hero?", tags: ["villain", "positive", "writing"] },
+  {
+    q: "Who is the best anti-hero?",
+    tags: ["positive", "villain", "writing"],
+  },
   {
     q: "Who has the most tragic love story?",
-    tags: ["romance", "negative", "tragic"],
+    tags: ["negative", "romance", "tragic"],
   },
   {
     q: "Which character impacted you most emotionally?",
-    tags: ["emotional", "positive", "impact"],
+    tags: ["positive", "emotional", "impact"],
   },
   {
     q: "Who is the most ruthless character?",
-    tags: ["dark", "negative", "villain"],
+    tags: ["negative", "dark", "villain"],
   },
   {
     q: "Who is the most loyal sidekick?",
-    tags: ["social", "positive", "support"],
+    tags: ["positive", "social", "support"],
   },
   {
     q: "Who has the best motivation?",
-    tags: ["writing", "positive", "emotional"],
+    tags: ["positive", "writing", "emotional"],
   },
   {
     q: "Who is the most noble character?",
-    tags: ["moral", "positive", "emotional"],
+    tags: ["positive", "moral", "emotional"],
   },
   {
     q: "Who has the best fight scenes?",
-    tags: ["power", "positive", "action"],
+    tags: ["positive", "power", "action"],
   },
   {
     q: "Who is the most tragic anti-hero?",
-    tags: ["tragic", "negative", "villain"],
+    tags: ["negative", "tragic", "villain"],
   },
   {
     q: "Who has the best visual growth?",
-    tags: ["growth", "positive", "visual"],
+    tags: ["positive", "growth", "visual"],
   },
   {
     q: "Who is the most philosophical character?",
-    tags: ["philosophy", "positive", "writing"],
+    tags: ["positive", "philosophy", "writing"],
   },
   {
     q: "Who is the most charming villain?",
-    tags: ["villain", "positive", "personality"],
+    tags: ["positive", "villain", "personality"],
   },
   {
     q: "Who is best at reading people?",
-    tags: ["intelligence", "positive", "writing"],
+    tags: ["positive", "intelligence", "writing"],
   },
   {
     q: "Who is the most tragic hero-villain mix?",
-    tags: ["villain", "negative", "tragic"],
+    tags: ["negative", "villain", "tragic"],
   },
   {
     q: "Who has the best family relationships?",
-    tags: ["social", "positive", "emotional"],
+    tags: ["positive", "social", "emotional"],
   },
   {
     q: "Who is the most stoic character?",
-    tags: ["personality", "positive", "emotional"],
+    tags: ["positive", "personality", "emotional"],
   },
   {
     q: "Who has the best sibling relationship?",
-    tags: ["social", "positive", "emotional"],
+    tags: ["positive", "social", "emotional"],
   },
   {
     q: "Who is the most underrated character?",
-    tags: ["underdog", "positive", "popular"],
+    tags: ["positive", "underdog", "popular"],
   },
   {
     q: "Who is the most rebellious character?",
-    tags: ["personality", "negative", "moral"],
+    tags: ["negative", "personality", "moral"],
   },
   {
     q: "Who is the most philosophical anti-hero?",
-    tags: ["philosophy", "positive", "villain"],
+    tags: ["positive", "philosophy", "villain"],
   },
-  { q: "Who is the best sidekick?", tags: ["support", "positive", "social"] },
+  {
+    q: "Who is the best sidekick?",
+    tags: ["positive", "support", "social"],
+  },
   {
     q: "Who would make the best leader?",
-    tags: ["leadership", "positive", "social"],
+    tags: ["positive", "leadership", "social"],
   },
   {
     q: "Who is the most noble villain?",
-    tags: ["villain", "positive", "moral"],
+    tags: ["positive", "villain", "moral"],
   },
   {
     q: "Who is the most empathetic character?",
-    tags: ["emotional", "positive", "personality"],
+    tags: ["positive", "emotional", "personality"],
   },
   {
     q: "Who has the best comedic timing?",
-    tags: ["humor", "positive", "personality"],
+    tags: ["positive", "humor", "personality"],
   },
   {
     q: "Who is the most stoic hero?",
-    tags: ["personality", "positive", "moral"],
+    tags: ["positive", "personality", "moral"],
   },
   {
     q: "Who has the best leadership skills?",
-    tags: ["leadership", "positive", "social"],
+    tags: ["positive", "leadership", "social"],
   },
   {
     q: "Who is the most charming hero?",
-    tags: ["personality", "positive", "moral"],
+    tags: ["positive", "personality", "moral"],
   },
   {
     q: "Who has the most impressive growth arc?",
-    tags: ["growth", "positive", "writing"],
+    tags: ["positive", "growth", "writing"],
   },
   {
     q: "Who is the strongest shonen protagonist?",
-    tags: ["power", "positive", "action"],
+    tags: ["positive", "power", "action"],
   },
   {
     q: "Who is the most loyal villain?",
-    tags: ["villain", "positive", "social"],
+    tags: ["positive", "villain", "social"],
   },
   {
     q: "Who is the best anti-villain?",
-    tags: ["villain", "positive", "complex"],
+    tags: ["positive", "villain", "complex"],
   },
   {
     q: "Who is the most emotionally complex person?",
-    tags: ["emotional", "negative", "personality"],
+    tags: ["negative", "emotional", "personality"],
   },
-  { q: "Who is the most feared?", tags: ["villain", "negative", "dark"] },
+  {
+    q: "Who is the most feared?",
+    tags: ["negative", "villain", "dark"],
+  },
   {
     q: "Who is the best strategist?",
-    tags: ["intelligence", "positive", "writing"],
+    tags: ["positive", "intelligence", "writing"],
   },
   {
     q: "Who is the most iconic protagonist?",
-    tags: ["impact", "positive", "popular"],
+    tags: ["positive", "impact", "popular"],
   },
   {
     q: "Who is the most underrated villain?",
-    tags: ["villain", "positive", "underdog"],
+    tags: ["positive", "villain", "underdog"],
   },
-  { q: "Who is the best rival?", tags: ["competition", "positive", "action"] },
+  {
+    q: "Who is the best rival?",
+    tags: ["positive", "competition", "action"],
+  },
   {
     q: "Who is the most tragic supporting role?",
-    tags: ["support", "negative", "tragic"],
+    tags: ["negative", "support", "tragic"],
   },
   {
     q: "Who is the most cunning character?",
-    tags: ["intelligence", "negative", "villain"],
+    tags: ["negative", "intelligence", "villain"],
   },
   {
     q: "Who is the most rebellious anti-hero?",
-    tags: ["villain", "negative", "personality"],
+    tags: ["negative", "villain", "personality"],
   },
-
   {
     q: "Who has the coolest catchphrase?",
-    tags: ["memorable", "positive", "personality"],
+    tags: ["positive", "memorable", "personality"],
   },
   {
     q: "Who would you want as a mentor?",
-    tags: ["leadership", "positive", "moral"],
+    tags: ["positive", "leadership", "moral"],
   },
   {
     q: "Who is the kindest anime character?",
-    tags: ["emotional", "positive", "moral"],
+    tags: ["positive", "emotional", "moral"],
   },
   {
     q: "Who is the scariest anime villain?",
-    tags: ["villain", "negative", "dark"],
+    tags: ["negative", "villain", "dark"],
   },
   {
     q: "Who is the most compassionate hero?",
-    tags: ["moral", "positive", "emotional"],
+    tags: ["positive", "moral", "emotional"],
   },
   {
     q: "Who had the most shocking betrayal?",
-    tags: ["tragic", "negative", "impact"],
+    tags: ["negative", "tragic", "impact"],
   },
   {
     q: "Who has the best rivalry?",
-    tags: ["competition", "positive", "writing"],
+    tags: ["positive", "competition", "writing"],
   },
   {
     q: "Who is the coolest anime mentor?",
-    tags: ["leadership", "positive", "social"],
+    tags: ["positive", "leadership", "social"],
   },
   {
     q: "Who is the most iconic sidekick?",
-    tags: ["support", "positive", "popular"],
+    tags: ["positive", "support", "popular"],
   },
   {
     q: "Who is the most confident character?",
-    tags: ["personality", "positive", "social"],
+    tags: ["positive", "personality", "social"],
   },
   {
     q: "Who gives the best speeches?",
-    tags: ["writing", "positive", " leadership"],
+    tags: ["positive", "writing", " leadership"],
   },
   {
     q: "Who would you want as a sibling?",
-    tags: ["social", "positive", "emotional"],
+    tags: ["positive", "social", "emotional"],
   },
   {
     q: "Who has the best smile in anime?",
-    tags: ["visual", "positive", "personality"],
+    tags: ["positive", "visual", "personality"],
   },
   {
     q: "Who has the most tragic childhood?",
-    tags: ["tragic", "negative", "writing"],
+    tags: ["negative", "tragic", "writing"],
   },
   {
     q: "Who is the smartest villain?",
-    tags: ["villain", "positive", "intelligence"],
+    tags: ["positive", "villain", "intelligence"],
   },
   {
     q: "Who would you trust in a crisis?",
-    tags: ["moral", "positive", "social"],
+    tags: ["positive", "moral", "social"],
   },
   {
     q: "Who made the saddest sacrifice?",
-    tags: ["emotional", "negative", "tragic"],
+    tags: ["negative", "emotional", "tragic"],
   },
   {
     q: "Who is the most misunderstood villain?",
-    tags: ["villain", "negative", "writing"],
+    tags: ["negative", "villain", "writing"],
   },
   {
     q: "Who has the most intimidating presence?",
-    tags: ["dark", "positive", "visual"],
+    tags: ["positive", "dark", "visual"],
   },
   {
     q: "Who is the most inspiring leader?",
-    tags: ["leadership", "positive", "impact"],
+    tags: ["positive", "leadership", "impact"],
   },
   {
     q: "Who is the calmest under pressure?",
-    tags: ["personality", "positive", "moral"],
+    tags: ["positive", "personality", "moral"],
   },
   {
     q: "Who has the most stylish outfit?",
-    tags: ["visual", "positive", "creative"],
+    tags: ["positive", "visual", "creative"],
   },
   {
     q: "Who is the bravest anime character?",
-    tags: ["moral", "positive", "emotional"],
+    tags: ["positive", "moral", "emotional"],
   },
-  { q: "Who is the funniest villain?", tags: ["villain", "positive", "humor"] },
+  {
+    q: "Who is the funniest villain?",
+    tags: ["positive", "villain", "humor"],
+  },
   {
     q: "Who had the most iconic betrayal?",
-    tags: ["impact", "negative", "tragic"],
+    tags: ["negative", "impact", "tragic"],
   },
   {
     q: "Who has the best one-liners?",
-    tags: ["writing", "positive", "memorable"],
+    tags: ["positive", "writing", "memorable"],
   },
   {
     q: "Who is the most underrated anti-hero?",
-    tags: ["villain", "positive", "underdog"],
+    tags: ["positive", "villain", "underdog"],
   },
   {
     q: "Who has the most beautiful redemption?",
-    tags: ["growth", "positive", "moral"],
+    tags: ["positive", "growth", "moral"],
   },
   {
     q: "Who is the funniest sidekick?",
-    tags: ["humor", "positive", "support"],
+    tags: ["positive", "humor", "support"],
   },
   {
     q: "Who is the most unsettling character?",
-    tags: ["dark", "negative", "personality"],
+    tags: ["negative", "dark", "personality"],
   },
   {
     q: "Who is the most self-destructive?",
-    tags: ["emotional", "negative", "tragic"],
+    tags: ["negative", "emotional", "tragic"],
   },
   {
     q: "Who is the most confident hero?",
-    tags: ["personality", "positive", "moral"],
+    tags: ["positive", "personality", "moral"],
   },
   {
     q: "Who has the coolest fighting style?",
-    tags: ["action", "positive", "visual"],
+    tags: ["positive", "action", "visual"],
   },
   {
     q: "Who is the most clever anti-hero?",
-    tags: ["villain", "positive", "intelligence"],
+    tags: ["positive", "villain", "intelligence"],
   },
   {
     q: "Who is the most intimidating hero?",
-    tags: ["personality", "positive", "power"],
+    tags: ["positive", "personality", "power"],
   },
   {
     q: "Who deserves their own spin-off?",
-    tags: ["popular", "positive", "writing"],
+    tags: ["positive", "popular", "writing"],
   },
   {
     q: "Who is the funniest rival?",
-    tags: ["humor", "positive", "competition"],
+    tags: ["positive", "humor", "competition"],
   },
   {
     q: "Who is the most heroic villain?",
-    tags: ["villain", "positive", "moral"],
+    tags: ["positive", "villain", "moral"],
   },
-  { q: "Who has the saddest journey?", tags: ["tragic", "negative", "growth"] },
+  {
+    q: "Who has the saddest journey?",
+    tags: ["negative", "tragic", "growth"],
+  },
   {
     q: "Who has the best nickname?",
-    tags: ["memorable", "positive", "popular"],
+    tags: ["positive", "memorable", "popular"],
   },
   {
     q: "Who is the calmest villain?",
-    tags: ["villain", "positive", "personality"],
+    tags: ["positive", "villain", "personality"],
   },
   {
     q: "Who makes you laugh no matter what?",
-    tags: ["humor", "positive", "emotional"],
+    tags: ["positive", "humor", "emotional"],
   },
   {
     q: "Who has the best moral code?",
-    tags: ["moral", "positive", "emotional"],
+    tags: ["positive", "moral", "emotional"],
   },
   {
     q: "Who is the most unpredictable character?",
-    tags: ["personality", "positive", "complex"],
+    tags: ["positive", "personality", "complex"],
   },
   {
     q: "Who is the most confident villain?",
-    tags: ["villain", "positive", "personality"],
+    tags: ["positive", "villain", "personality"],
   },
   {
     q: "Who has the most satisfying revenge story?",
-    tags: ["writing", "negative", "impact"],
+    tags: ["negative", "writing", "impact"],
   },
   {
     q: "Who do you think has the best voice performance?",
-    tags: ["impact", "positive", "popular"],
+    tags: ["positive", "impact", "popular"],
   },
 ];

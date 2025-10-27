@@ -1,51 +1,51 @@
 export const animeQuestions = [
   {
     q: "What is your all-time favorite anime?",
-    tags: ["favorite", "positive", "emotional"],
+    tags: ["positive", "favorite", "emotional"],
   },
   {
     q: "Which anime do you rewatch the most?",
-    tags: ["favorite", "positive", "nostalgic"],
+    tags: ["positive", "favorite", "nostalgic"],
   },
   {
     q: "What anime has the best storytelling?",
-    tags: ["writing", "positive", "creative"],
+    tags: ["positive", "writing", "creative"],
   },
   {
     q: "Which anime has the best world-building?",
-    tags: ["writing", "positive", "fantasy"],
+    tags: ["positive", "writing", "fantasy"],
   },
   {
     q: "What anime has the best soundtrack?",
-    tags: ["music", "positive", "technical"],
+    tags: ["positive", "music", "technical"],
   },
   {
     q: "Which anime has the most beautiful visuals?",
-    tags: ["visual", "positive", "technical"],
+    tags: ["positive", "visual", "technical"],
   },
   {
     q: "What anime do you consider a masterpiece?",
-    tags: ["quality", "positive", "writing"],
+    tags: ["positive", "quality", "writing"],
   },
   {
     q: "What anime has the best character development?",
-    tags: ["writing", "positive", "emotional"],
+    tags: ["positive", "writing", "emotional"],
   },
   {
     q: "Which anime impacted you emotionally the most?",
-    tags: ["emotional", "negative", "dramatic"],
+    tags: ["negative", "emotional", "dramatic"],
   },
   {
     q: "What anime made you cry?",
-    tags: ["emotional", "negative", "dramatic"],
+    tags: ["negative", "emotional", "dramatic"],
   },
   {
     q: "Which anime made you laugh the hardest?",
-    tags: ["humor", "positive", "emotional"],
+    tags: ["positive", "humor", "emotional"],
   },
   {
     q: "Which anime do you find overrated?",
-    tags: ["controversial", "negative", "popular"],
+    tags: ["negative", "controversial", "popular"],
   },
   {
     q: "Which anime do you think is underrated?",
@@ -53,83 +53,83 @@ export const animeQuestions = [
   },
   {
     q: "What anime had the best fight scenes?",
-    tags: ["action", "positive", "technical"],
+    tags: ["positive", "action", "technical"],
   },
   {
     q: "Which anime has the best romance?",
-    tags: ["romance", "positive", "emotional"],
+    tags: ["positive", "romance", "emotional"],
   },
   {
     q: "Which anime has the worst ending?",
-    tags: ["writing", "negative", "controversial"],
+    tags: ["negative", "writing", "controversial"],
   },
   {
     q: "What anime has the best ending?",
-    tags: ["writing", "positive", "quality"],
+    tags: ["positive", "writing", "quality"],
   },
   {
     q: "Which anime has the most satisfying plot twist?",
-    tags: ["writing", "positive", "surprising"],
+    tags: ["positive", "writing", "surprising"],
   },
   {
     q: "Which anime has the most confusing plot?",
-    tags: ["writing", "negative", "complex"],
+    tags: ["negative", "writing", "complex"],
   },
   {
     q: "Which anime would you recommend to a beginner?",
-    tags: ["recommendation", "positive", "favorite"],
+    tags: ["positive", "recommendation", "favorite"],
   },
   {
     q: "Which anime defines your childhood?",
-    tags: ["nostalgic", "positive", "favorite"],
+    tags: ["positive", "nostalgic", "favorite"],
   },
   {
     q: "Which anime has the most iconic opening theme?",
-    tags: ["music", "positive", "popular"],
+    tags: ["positive", "music", "popular"],
   },
   {
     q: "What anime has the best visual style?",
-    tags: ["visual", "positive", "creative"],
+    tags: ["positive", "visual", "creative"],
   },
   {
     q: "Which anime has the best art direction?",
-    tags: ["visual", "positive", "technical"],
+    tags: ["positive", "visual", "technical"],
   },
   {
     q: "What anime has the most creative concept?",
-    tags: ["creative", "positive", "writing"],
+    tags: ["positive", "creative", "writing"],
   },
   {
     q: "Which anime do you find most inspirational?",
-    tags: ["emotional", "positive", "quality"],
+    tags: ["positive", "emotional", "quality"],
   },
   {
     q: "What anime has the best teamwork moments?",
-    tags: ["action", "positive", "emotional"],
+    tags: ["positive", "action", "emotional"],
   },
   {
     q: "Which anime has the best villains?",
-    tags: ["writing", "positive", "dark"],
+    tags: ["positive", "writing", "dark"],
   },
   {
     q: "What anime has the most complex characters?",
-    tags: ["writing", "positive", "complex"],
+    tags: ["positive", "writing", "complex"],
   },
   {
     q: "Which anime has the best pacing?",
-    tags: ["writing", "positive", "quality"],
+    tags: ["positive", "writing", "quality"],
   },
   {
     q: "Which anime has the worst pacing?",
-    tags: ["writing", "negative", "controversial"],
+    tags: ["negative", "writing", "controversial"],
   },
   {
     q: "What anime has the best build-up to its climax?",
-    tags: ["writing", "positive", "dramatic"],
+    tags: ["positive", "writing", "dramatic"],
   },
   {
     q: "Which anime has the most memorable quotes?",
-    tags: ["writing", "positive", "popular"],
+    tags: ["positive", "writing", "popular"],
   },
   {
     q: "Which anime franchise goes on for too long?",
@@ -137,7 +137,7 @@ export const animeQuestions = [
   },
   {
     q: "Which anime deserves a sequel?",
-    tags: ["quality", "positive", "expectation"],
+    tags: ["positive", "quality", "expectation"],
   },
   {
     q: "Which anime should never have gotten a sequel?",
@@ -145,72 +145,75 @@ export const animeQuestions = [
   },
   {
     q: "Which anime deserves a remake?",
-    tags: ["expectation", "positive", "nostalgic"],
+    tags: ["positive", "expectation", "nostalgic"],
   },
   {
     q: "Which anime’s ending left you speechless?",
-    tags: ["emotional", "positive", "dramatic"],
+    tags: ["positive", "emotional", "dramatic"],
   },
   {
     q: "What anime aged the best?",
-    tags: ["nostalgic", "positive", "quality"],
+    tags: ["positive", "nostalgic", "quality"],
   },
-  { q: "What anime aged poorly?", tags: ["nostalgic", "negative", "opinion"] },
+  {
+    q: "What anime aged poorly?",
+    tags: ["negative", "nostalgic", "opinion"],
+  },
   {
     q: "Which anime has the most stylish characters?",
-    tags: ["visual", "positive", "fashion"],
+    tags: ["positive", "visual", "fashion"],
   },
   {
     q: "What is the most relaxing anime?",
-    tags: ["slice-of-life", "positive", "calm"],
+    tags: ["positive", "slice-of-life", "calm"],
   },
   {
     q: "Which anime feels coziest to watch?",
-    tags: ["slice-of-life", "positive", "nostalgic"],
+    tags: ["positive", "slice-of-life", "nostalgic"],
   },
   {
     q: "What anime would you show to someone new to anime?",
-    tags: ["recommendation", "positive", "intro"],
+    tags: ["positive", "recommendation", "intro"],
   },
   {
     q: "Which anime broke your heart?",
-    tags: ["emotional", "negative", "dramatic"],
+    tags: ["negative", "emotional", "dramatic"],
   },
   {
     q: "Which anime has the best use of music?",
-    tags: ["music", "positive", "technical"],
+    tags: ["positive", "music", "technical"],
   },
   {
     q: "What anime has the coolest world design?",
-    tags: ["visual", "fantasy", "positive"],
+    tags: ["positive", "visual", "fantasy"],
   },
   {
     q: "Which anime features the best mentor figure?",
-    tags: ["writing", "positive", "emotional"],
+    tags: ["positive", "writing", "emotional"],
   },
   {
     q: "What anime balances comedy and drama best?",
-    tags: ["writing", "positive", "humor"],
+    tags: ["positive", "writing", "humor"],
   },
   {
     q: "Which anime has the best friendships?",
-    tags: ["slice-of-life", "positive", "emotional"],
+    tags: ["positive", "slice-of-life", "emotional"],
   },
   {
     q: "Which anime has the most unpredictable story?",
-    tags: ["writing", "positive", "surprising"],
+    tags: ["positive", "writing", "surprising"],
   },
   {
     q: "Which anime has the best sports competition?",
-    tags: ["action", "positive", "teamwork"],
+    tags: ["positive", "action", "teamwork"],
   },
   {
     q: "What anime has the best supernatural elements?",
-    tags: ["fantasy", "positive", "creative"],
+    tags: ["positive", "fantasy", "creative"],
   },
   {
     q: "Which anime has the most disturbing story?",
-    tags: ["dark", "negative", "dramatic"],
+    tags: ["negative", "dark", "dramatic"],
   },
   {
     q: "Which anime is the most uplifting?",
@@ -218,31 +221,31 @@ export const animeQuestions = [
   },
   {
     q: "What anime has the most jaw-dropping visuals?",
-    tags: ["visual", "positive", "quality"],
+    tags: ["positive", "visual", "quality"],
   },
   {
     q: "What anime has the best female cast?",
-    tags: ["writing", "positive", "representation"],
+    tags: ["positive", "writing", "representation"],
   },
   {
     q: "What anime has the best male cast?",
-    tags: ["writing", "positive", "representation"],
+    tags: ["positive", "writing", "representation"],
   },
   {
     q: "Which anime has the smartest writing?",
-    tags: ["writing", "positive", "complex"],
+    tags: ["positive", "writing", "complex"],
   },
   {
     q: "Which anime makes you think the most?",
-    tags: ["writing", "positive", "philosophical"],
+    tags: ["positive", "writing", "philosophical"],
   },
   {
     q: "Which anime should everyone watch once?",
-    tags: ["favorite", "positive", "recommendation"],
+    tags: ["positive", "favorite", "recommendation"],
   },
   {
     q: "Which anime do you think is misunderstood?",
-    tags: ["controversial", "negative", "opinion"],
+    tags: ["negative", "controversial", "opinion"],
   },
   {
     q: "Which anime did you drop halfway?",
@@ -250,43 +253,43 @@ export const animeQuestions = [
   },
   {
     q: "Which anime has the most iconic scenes?",
-    tags: ["popular", "positive", "visual"],
+    tags: ["positive", "popular", "visual"],
   },
   {
     q: "Which anime shocked you the most?",
-    tags: ["surprising", "negative", "dramatic"],
+    tags: ["negative", "surprising", "dramatic"],
   },
   {
     q: "Which anime do you show your friends first?",
-    tags: ["recommendation", "positive", "intro"],
+    tags: ["positive", "recommendation", "intro"],
   },
   {
     q: "Which anime has the most detailed world?",
-    tags: ["fantasy", "positive", "writing"],
+    tags: ["positive", "fantasy", "writing"],
   },
   {
     q: "Which anime has the best mecha design?",
-    tags: ["visual", "technical", "positive"],
+    tags: ["positive", "visual", "technical"],
   },
   {
     q: "Which anime defines the shonen genre for you?",
-    tags: ["action", "positive", "genre"],
+    tags: ["positive", "action", "genre"],
   },
   {
     q: "Which anime defines the slice-of-life genre?",
-    tags: ["slice-of-life", "positive", "genre"],
+    tags: ["positive", "slice-of-life", "genre"],
   },
   {
     q: "Which anime do you consider peak mystery writing?",
-    tags: ["writing", "positive", "genre"],
+    tags: ["positive", "writing", "genre"],
   },
   {
     q: "Which anime has the most realistic setting?",
-    tags: ["writing", "positive", "realistic"],
+    tags: ["positive", "writing", "realistic"],
   },
   {
     q: "Which anime made you question humanity?",
-    tags: ["dark", "negative", "philosophical"],
+    tags: ["negative", "dark", "philosophical"],
   },
   {
     q: "Which anime deserves more recognition?",
@@ -294,31 +297,31 @@ export const animeQuestions = [
   },
   {
     q: "Which anime is your guilty pleasure?",
-    tags: ["humor", "positive", "opinion"],
+    tags: ["positive", "humor", "opinion"],
   },
   {
     q: "Which anime has the best rivalries?",
-    tags: ["action", "positive", "dramatic"],
+    tags: ["positive", "action", "dramatic"],
   },
   {
     q: "What anime has the best opening scene?",
-    tags: ["writing", "positive", "dramatic"],
+    tags: ["positive", "writing", "dramatic"],
   },
   {
     q: "Which anime has the best cinematography?",
-    tags: ["visual", "positive", "technical"],
+    tags: ["positive", "visual", "technical"],
   },
   {
     q: "Which anime would make a great live-action?",
-    tags: ["adaptation", "positive", "expectation"],
+    tags: ["positive", "adaptation", "expectation"],
   },
   {
     q: "Which anime would you want to live in?",
-    tags: ["fantasy", "positive", "emotional"],
+    tags: ["positive", "fantasy", "emotional"],
   },
   {
     q: "What anime has the most powerful message?",
-    tags: ["writing", "positive", "philosophical"],
+    tags: ["positive", "writing", "philosophical"],
   },
   {
     q: "Which anime disappointed you the most?",
@@ -326,15 +329,15 @@ export const animeQuestions = [
   },
   {
     q: "Which anime has the most atmospheric tone?",
-    tags: ["visual", "positive", "writing"],
+    tags: ["positive", "visual", "writing"],
   },
   {
     q: "Which anime do you think everyone overhypes?",
-    tags: ["controversial", "negative", "popular"],
+    tags: ["negative", "controversial", "popular"],
   },
   {
     q: "What anime has the best redemption arcs?",
-    tags: ["writing", "positive", "emotional"],
+    tags: ["positive", "writing", "emotional"],
   },
   {
     q: "Which anime is the best at world politics?",
@@ -342,38 +345,38 @@ export const animeQuestions = [
   },
   {
     q: "Which anime has the most creative magic system?",
-    tags: ["fantasy", "positive", "creative"],
+    tags: ["positive", "fantasy", "creative"],
   },
   {
     q: "Which anime has the most consistent tone?",
-    tags: ["writing", "positive", "quality"],
+    tags: ["positive", "writing", "quality"],
   },
   {
     q: "What anime would you recommend for horror fans?",
-    tags: ["dark", "negative", "genre"],
+    tags: ["negative", "dark", "genre"],
   },
   {
     q: "Which anime defines the seinen genre?",
-    tags: ["genre", "positive", "writing"],
+    tags: ["positive", "genre", "writing"],
   },
   {
     q: "What anime would you recommend for romance lovers?",
-    tags: ["romance", "positive", "genre"],
+    tags: ["positive", "romance", "genre"],
   },
   {
     q: "What anime do you think shaped the medium?",
-    tags: ["influence", "positive", "popular"],
+    tags: ["positive", "influence", "popular"],
   },
   {
     q: "Which anime best represents Japanese culture?",
-    tags: ["realistic", "positive", "writing"],
+    tags: ["positive", "realistic", "writing"],
   },
   {
     q: "Which anime has the most iconic imagery?",
-    tags: ["visual", "positive", "popular"],
+    tags: ["positive", "visual", "popular"],
   },
   {
     q: "Which anime could you watch forever?",
-    tags: ["favorite", "positive", "nostalgic"],
+    tags: ["positive", "favorite", "nostalgic"],
   },
 ];
