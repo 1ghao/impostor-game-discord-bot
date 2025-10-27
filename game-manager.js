@@ -9,7 +9,7 @@ import {
 import { animeQuestions } from "./data/anime-questions.js";
 import { characterQuestions } from "./data/character-questions.js";
 
-function findMatchingQuestion(realQuestion, questionBank) {
+export function findMatchingQuestion(realQuestion, questionBank) {
   const realTags = new Set(realQuestion.tags);
   const pools = {
     high: [], // 3+ matching tags
