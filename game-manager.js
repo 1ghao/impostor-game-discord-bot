@@ -30,6 +30,26 @@ function findMatchingQuestion(realQuestion, questionBank) {
       }
     }
 
+    function checkPositivity(tags1, tags2) {
+      const hasPositive1 = tags1.includes("positive");
+      const hasNegative1 = tags1.includes("negative");
+
+      const hasPositive2 = tags2.includes("positive");
+      const hasNegative2 = tags2.includes("negative");
+
+      if ((hasPositive1 && hasNegative1) || (hasPositive2 && hasNegative2)) {
+        if ((hasPositive1 && hasNegative2) || (hasNegative1 && hasPositive2)) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    if (!checkPositivity(realQuestion.tags, potentialMatch.tags)) {
+      score = 0;
+    }
+
     if (score >= 3) {
       pools.high.push(potentialMatch);
     } else if (score === 2) {
