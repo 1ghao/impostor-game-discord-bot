@@ -9,13 +9,28 @@ import {
 import { animeQuestions } from "./data/anime-questions.js";
 import { characterQuestions } from "./data/character-questions.js";
 
+function _checkPolarity(tags1, tags2) {
+  const hasPositive1 = tags1.includes("positive");
+  const hasNegative1 = tags1.includes("negative");
+
+  const hasPositive2 = tags2.includes("positive");
+  const hasNegative2 = tags2.includes("negative");
+
+  if ((hasPositive1 && hasNegative2) || (hasNegative1 && hasPositive2)) {
+    return false;
+  }
+
+  return true;
+}
+
 export function findMatchingQuestion(realQuestion, questionBank) {
   const realTags = new Set(realQuestion.tags);
   const pools = {
-    high: [], // 3+ matching tags
-    medium: [], // 2 matching tags
-    low: [], // 1 matching tag
-    any: [], // fallback
+    high: [], // 4+ matching tags
+    medium: [], // 3 matching tags
+    low: [], // 2 matching tags
+    fallback: [], // 1 matching tag
+    any: [], // 0 matching tags
   };
 
   for (const potentialMatch of questionBank) {
@@ -30,32 +45,18 @@ export function findMatchingQuestion(realQuestion, questionBank) {
       }
     }
 
-    function checkPositivity(tags1, tags2) {
-      const hasPositive1 = tags1.includes("positive");
-      const hasNegative1 = tags1.includes("negative");
-
-      const hasPositive2 = tags2.includes("positive");
-      const hasNegative2 = tags2.includes("negative");
-
-      if ((hasPositive1 && hasNegative1) || (hasPositive2 && hasNegative2)) {
-        if ((hasPositive1 && hasNegative2) || (hasNegative1 && hasPositive2)) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-
-    if (!checkPositivity(realQuestion.tags, potentialMatch.tags)) {
+    if (!_checkPolarity(realQuestion.tags, potentialMatch.tags)) {
       score = 0;
     }
 
-    if (score >= 3) {
+    if (score >= 4) {
       pools.high.push(potentialMatch);
-    } else if (score === 2) {
+    } else if (score === 3) {
       pools.medium.push(potentialMatch);
-    } else if (score === 1) {
+    } else if (score === 2) {
       pools.low.push(potentialMatch);
+    } else if (score === 1) {
+      pools.fallback.push(potentialMatch);
     } else {
       pools.any.push(potentialMatch);
     }
@@ -64,45 +65,80 @@ export function findMatchingQuestion(realQuestion, questionBank) {
   const randFloat = Math.random();
 
   if (pools.high.length > 2) {
-    console.log(`Found ${pools.high.length} high-compatibility matches.`);
+    console.log(
+      `Found ${pools.high.length} high-compatibility (4-tag) matches.`
+    );
     return pools.high[Math.floor(randFloat * pools.high.length)];
   }
 
   if (pools.high.length > 0) {
     console.log(
-      `Found only ${pools.high.length} high-compatibility matches, appending 3 medium-compatibility matches`
+      `Found only ${pools.high.length} high matches, appending medium-compatibility (3-tag) matches`
     );
-    const mediumPool = pools.medium;
 
-    // Shuffle array
+    // Shuffle Pool
+    const mediumPool = pools.medium;
     for (let i = mediumPool.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [mediumPool[i], mediumPool[j]] = [mediumPool[j], mediumPool[i]];
     }
 
-    while (pools.high.length < Math.min(mediumPool.length, 4)) {
-      pools.high.push(mediumPool.pop());
+    const combinedPool = pools.high;
+
+    while (combinedPool.length < 4 && mediumPool.length > 0) {
+      combinedPool.push(mediumPool.pop());
     }
-    return pools.high[Math.floor(randFloat * pools.high.length)];
+
+    return combinedPool[Math.floor(randFloat * combinedPool.length)];
   }
 
-  if (pools.medium.length > 0) {
+  if (pools.medium.length > 2) {
     console.log(
-      `No high matches. Found ${pools.medium.length} medium-compatibility matches.`
+      `No high matches. Found ${pools.medium.length} medium-compatibility (3-tag) matches.`
     );
     return pools.medium[Math.floor(randFloat * pools.medium.length)];
   }
 
+  if (pools.medium.length > 0) {
+    console.log(
+      `Found only ${pools.medium.length} medium matches, appending low-compatibility (2-tag) matches`
+    );
+
+    const lowPool = pools.low;
+    for (let i = lowPool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [lowPool[i], lowPool[j]] = [lowPool[j], lowPool[i]];
+    }
+
+    const combinedPool = pools.medium;
+    while (combinedPool.length < 4 && lowPool.length > 0) {
+      combinedPool.push(lowPool.pop());
+    }
+
+    return combinedPool[Math.floor(randFloat * combinedPool.length)];
+  }
+
   if (pools.low.length > 0) {
     console.log(
-      `No medium matches. Found ${pools.low.length} low-compatibility matches.`
+      `No high/medium matches. Found ${pools.low.length} low-compatibility (2-tag) matches.`
     );
     return pools.low[Math.floor(randFloat * pools.low.length)];
   }
 
-  // If no questions share any tags, pick a random "other" question
+  if (pools.fallback.length > 0) {
+    console.log(
+      `No 2-tag matches. Found ${pools.fallback.length} fallback (1-tag) matches.`
+    );
+    return pools.fallback[Math.floor(randFloat * pools.fallback.length)];
+  }
+
   console.log("No compatible matches found. Picking any random question.");
-  return pools.any[Math.floor(randFloat * pools.any.length)];
+  if (pools.any.length > 0) {
+    return pools.any[Math.floor(randFloat * pools.any.length)];
+  }
+
+  // Absolute fallback
+  return questionBank[Math.floor(Math.random() * questionBank.length)];
 }
 
 /**
