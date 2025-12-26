@@ -6,7 +6,7 @@ import {
   ButtonStyle,
 } from "discord.js";
 
-export function createLobbyEmbed(host, participants) {
+export function createImpostorLobbyEmbed(host, participants) {
   const participantNames = Array.from(participants.values())
     .map((user) => user.username)
     .join("\n");
@@ -21,7 +21,7 @@ export function createLobbyEmbed(host, participants) {
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("startgame")
+    .setName("startimpostor")
     .setDescription("Starts a new game of Impostor")
     .addStringOption((option) =>
       option
@@ -72,7 +72,7 @@ export default {
       activeThreads: new Map(),
     };
 
-    const embed = createLobbyEmbed(host, participants);
+    const embed = createImpostorLobbyEmbed(host, participants);
 
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()

@@ -19,9 +19,9 @@ import {
   startRound,
   proceedToVoting,
   proceedToReveal,
-} from "./game-manager.js";
+} from "./impostor-manager.js";
 // Import lobby helper
-import { createLobbyEmbed } from "./commands/startgame.js";
+import { createImpostorLobbyEmbed } from "./commands/startImpostorGame.js";
 
 dotenv.config();
 
@@ -173,7 +173,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       if (game.state === "lobby") {
         if (customId === "joinGame") {
           game.participants.set(user.id, user);
-          const embed = createLobbyEmbed(
+          const embed = createImpostorLobbyEmbed(
             game.participants.get(game.hostId),
             game.participants
           );
@@ -192,7 +192,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
             });
           }
           game.participants.delete(user.id);
-          const embed = createLobbyEmbed(
+          const embed = createImpostorLobbyEmbed(
             game.participants.get(game.hostId),
             game.participants
           );

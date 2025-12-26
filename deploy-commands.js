@@ -5,7 +5,7 @@ dotenv.config();
 
 const commands = [
   new SlashCommandBuilder()
-    .setName("startgame")
+    .setName("startimpostor")
     .setDescription("Starts a new game of Impostor")
     .addStringOption((option) =>
       option
