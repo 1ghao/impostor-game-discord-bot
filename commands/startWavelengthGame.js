@@ -38,13 +38,17 @@ export default {
     participants.set(host.id, host);
 
     const game = {
+      type: "wavelength",
       hostId: host.id,
       channelId: channelId,
       participants: participants,
-      answers: new Map(),
-      votes: new Map(),
+      psychicId: null,
+      psychicIndex: -1,
+      spectrum: null,
+      target: 0,
+      clue: null,
+      guesses: new Map(),
       state: "lobby",
-      extrema: null,
       lobbyMessage: null,
       answerTimeout: null,
       voteTimeout: null,
@@ -60,7 +64,7 @@ export default {
         .setLabel("Join Game")
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
-        .setCustomId("startGame")
+        .setCustomId("startWavelength")
         .setLabel("Start Game")
         .setStyle(ButtonStyle.Success),
       new ButtonBuilder()
@@ -72,7 +76,6 @@ export default {
     const lobbyMessage = await interaction.reply({
       embeds: [embed],
       components: [row],
-      fetchReply: true,
     });
     game.lobbyMessage = lobbyMessage;
     activeGames.set(channelId, game);

@@ -80,7 +80,7 @@ export default {
         .setLabel("Join Game")
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
-        .setCustomId("startGame")
+        .setCustomId("startImpostor")
         .setLabel("Start Game")
         .setStyle(ButtonStyle.Success),
       new ButtonBuilder()
@@ -92,7 +92,6 @@ export default {
     const lobbyMessage = await interaction.reply({
       embeds: [embed],
       components: [row],
-      fetchReply: true,
     });
     game.lobbyMessage = lobbyMessage;
     activeGames.set(channelId, game);

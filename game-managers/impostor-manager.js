@@ -6,8 +6,8 @@ import {
   StringSelectMenuBuilder,
   ChannelType,
 } from "discord.js";
-import { animeQuestions } from "./data/anime-questions.js";
-import { characterQuestions } from "./data/character-questions.js";
+import { animeQuestions } from "../data/anime-questions.js";
+import { characterQuestions } from "../data/character-questions.js";
 
 function _checkPolarity(tags1, tags2) {
   const hasPositive1 = tags1.includes("positive");
