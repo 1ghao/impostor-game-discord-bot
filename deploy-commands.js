@@ -21,6 +21,9 @@ const commands = [
         )
     ),
   new SlashCommandBuilder()
+    .setName("startwavelength")
+    .setDescription("Starts a new game of Wavelength"),
+  new SlashCommandBuilder()
     .setName("stopgame")
     .setDescription("Stops the current game in this channel"),
 ].map((command) => command.toJSON());
