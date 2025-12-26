@@ -528,17 +528,26 @@ client.on(Events.InteractionCreate, async (interaction) => {
     // Guess
     if (customId.startsWith("wl_guessModal_")) {
       const val = parseInt(interaction.fields.getTextInputValue("guessInput"));
-      if (isNaN(val) || val < 0 || val > 100)
-        return interaction.reply({
-          content: "Enter 0-100",
+      if (isNaN(val) || val < 0 || val > 100) {
+        try {
+          return await interaction.reply({
+            content: "Please enter a valid number between 0 and 100.",
+            flags: [MessageFlags.Ephemeral],
+          });
+        } catch (e) {
+          console.warn("Failed to send validation error reply:", e.message);
+          return;
+        }
+      }
+      game.guesses.set(interaction.user.id, val);
+      try {
+        await interaction.reply({
+          content: `You guessed: **${val}**`,
           flags: [MessageFlags.Ephemeral],
         });
-
-      game.guesses.set(interaction.user.id, val);
-      await interaction.reply({
-        content: `Guessed: ${val}`,
-        flags: [MessageFlags.Ephemeral],
-      });
+      } catch (e) {
+        console.warn("Failed to send guess confirmation:", e.message);
+      }
 
       // Check if all players (minus psychic) guessed
       if (game.guesses.size >= game.participants.size - 1) {
