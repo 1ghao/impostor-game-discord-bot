@@ -564,6 +564,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
   // 4. Handle Select Menus ( Impostor Voting)
   if (interaction.isStringSelectMenu()) {
+    const { customId } = interaction;
     if (interaction.customId.startsWith("voteMenu_")) {
       const parts = customId.split("_");
       const round = parts.at(-1);
