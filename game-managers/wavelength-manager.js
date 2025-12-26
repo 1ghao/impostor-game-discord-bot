@@ -49,7 +49,7 @@ export async function initWavelengthRound(
     const participantsArray = Array.from(game.participants.values());
     game.psychicIndex = (game.psychicIndex + 1) % participantsArray.length;
     const psychicUser = participantsArray[game.psychicIndex];
-    game.psychicId = psychicUser;
+    game.psychicId = psychicUser.id;
 
     // 2. Decide spectrum
     if (keepSpectrum && game.spectrum) {
@@ -178,7 +178,7 @@ export async function handleClueSubmission(game, client, clueText) {
     .setColor(0x9b59b6)
     .setTitle("Choosing time!")
     .setDescription(
-      `Spectrum: **${game.spectrum.left}** <---> **${game.spectrum.right}**\n\nClue: # **"${clueText}"**`
+      `Spectrum: **${game.spectrum.left}** <---> **${game.spectrum.right}**\n\nClue: **"${clueText}"**`
     )
     .setFooter({ text: "Where does this clue fit on the spectrum? (0-100)" });
 
@@ -224,13 +224,13 @@ export async function revealWavelengthResult(
 
   let score = 0;
   let message = "";
-  if (diff <= 3) {
+  if (diff <= 5) {
     score = 4;
     message = "PERFECT! 🎯";
-  } else if (diff <= 10) {
+  } else if (diff <= 15) {
     score = 3;
     message = "Great job! 👏";
-  } else if (diff <= 20) {
+  } else if (diff <= 25) {
     score = 2;
     message = "Not bad.";
   } else {
