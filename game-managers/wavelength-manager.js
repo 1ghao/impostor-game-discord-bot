@@ -3,7 +3,6 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  StringSelectMenuBuilder,
   ChannelType,
 } from "discord.js";
 
@@ -205,7 +204,6 @@ export async function revealWavelengthResult(
   game.state = "finished";
   const channel = await client.channels.fetch(game.channelId);
 
-  // ... (Calculation logic same as before) ...
   let total = 0;
   let count = 0;
   let guessDetails = "";
@@ -217,7 +215,7 @@ export async function revealWavelengthResult(
     guessDetails += `${user.username}: ${val}\n`;
   }
   // If count is 0 handling... (keep your existing logic)
-  if (count === 0) total = 0; // Prevent NaN
+  if (count === 0) total = 0;
 
   const avgGuess = count > 0 ? Math.round(total / count) : 0;
   const diff = Math.abs(game.target - avgGuess);
@@ -256,7 +254,7 @@ export async function revealWavelengthResult(
     )
     .setColor(score > 0 ? 0x00ff00 : 0xff0000);
 
-  // --- CHANGED: New Buttons for Next Round ---
+  // Buttons for Next Round
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
       .setCustomId("wl_nextRound_new")
@@ -272,5 +270,9 @@ export async function revealWavelengthResult(
       .setStyle(ButtonStyle.Danger)
   );
 
-  await channel.send({ embeds: [embed], components: [row] });
+  const resultsMessage = await channel.send({
+    embeds: [embed],
+    components: [row],
+  });
+  game.lobbyMessage = resultsMessage;
 }
