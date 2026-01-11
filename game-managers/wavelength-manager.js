@@ -208,6 +208,8 @@ export async function revealWavelengthResult(
   let count = 0;
   let guessDetails = "";
   for (const [userId, val] of game.guesses) {
+    if (!user) continue;
+
     const user = game.participants.get(userId);
     if (userId === game.psychicId) continue;
     total += val;
