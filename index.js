@@ -527,6 +527,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
     // Guess
     if (customId.startsWith("wl_guessModal_")) {
+      if (!game.participants.has(interaction.user.id)) {
+        return interaction.reply({
+          content: "You are not a participant in this game!",
+          flags: [MessageFlags.Ephemeral],
+        });
+      }
       const val = parseInt(interaction.fields.getTextInputValue("guessInput"));
       if (isNaN(val) || val < 0 || val > 100) {
         try {
